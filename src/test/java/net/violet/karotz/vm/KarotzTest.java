@@ -35,7 +35,7 @@ public class KarotzTest {
 
     @Test
     public void earsMove() throws ScriptException, InterruptedException {
-        engine.eval("karotz.ears.move(5, 3, function(event){ log(event);});");
+        engine.eval("karotz.ears.move(5, 3, function(event){ log(event);} );");
         Thread.sleep(500);
     }
 
@@ -66,5 +66,71 @@ public class KarotzTest {
     public void ledPulse() throws ScriptException, InterruptedException {
         engine.eval("karotz.led.pulse('FFFFFF', 100, 500,function(event){ log(event);});");
         Thread.sleep(700);
+    }
+
+    @Test
+    public void multimediaPlay() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.play('http://www.google.fr/toto.mp3',function(event){ log(event);});");
+        Thread.sleep(1200);
+    }
+
+    @Test
+    public void multimediaPause() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.pause(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaResume() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.resume(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaStop() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.stop(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaNext() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.next(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaPrevious() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.previous(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaArtist() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.artist(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaFolder() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.folder(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaPlaylist() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.playlist(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaGenre() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.genre(function(event){ log(event);});");
+        Thread.sleep(100);
+    }
+
+    @Test
+    public void multimediaSong() throws ScriptException, InterruptedException {
+        engine.eval("karotz.multimedia.song(function(event){ log(event);});");
+        Thread.sleep(100);
     }
 }

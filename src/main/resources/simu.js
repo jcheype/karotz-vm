@@ -18,7 +18,6 @@ karotz.tts.stop = function(callback){
         setTimeout(100, function(){ callback("TERMINATED")})
 }
 
-
 //////////////////////////
 karotz.ears = {}
 karotz.ears.move = function(left, right, callback){
@@ -57,3 +56,18 @@ karotz.led.pulse = function(color, pulsePeriod, time, callback){
     if(callback)
         setTimeout(time, function(){ callback("TERMINATED")});
 }
+
+
+//////////////////////////
+karotz.multimedia = {}
+karotz.multimedia.play = function( path, callback){
+    log("karotz should play sound: " + path);
+    if(callback)
+        setTimeout(1000, function(){ callback("TERMINATED")})
+};
+
+///////////////////////////
+karotz.button = { "addListener" : function(callback){} };
+karotz.rfid = { "addListener" : function(callback){} };
+karotz.ears.addListener = function(callback){} ;
+karotz.multimedia.addListener = function(callback){};

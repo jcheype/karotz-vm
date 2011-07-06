@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import junit.framework.Assert;
 
 /**
  * Unit test for simple App.
@@ -29,6 +30,29 @@ public class AppTest
     @Test
     public void httpGet() throws ScriptException {
         engine.eval("print(http.get('http://www.google.fr'));");
+    }
+    
+    @Test
+    public void httpPost() throws ScriptException {
+        System.out.println("httpPost");
+        engine.eval("var mavar = http.post('http://10.104.2.38/cookies/index.php', {'toto':'tata'});"
+                + "if ( mavar.indexOf('[toto] => tata') == -1 ) { throw 'cannot find result in post'; }");
+    }
+
+    @Test
+    public void httpGet2() throws ScriptException {
+        System.out.println("httpGet2");
+        engine.eval("var mavar = http.get2('http://www.google.fr');");
+        engine.eval("if( mavar.get('header') == undefined ) { throw 'Header undefined'; }");
+        engine.eval("if( mavar.get('content') == undefined ) { throw 'Content undefined'; }");
+    }
+    
+    @Test
+    public void httpPost2() throws ScriptException {
+        System.out.println("httpPost2");
+        engine.eval("var mavar = http.post2('http://10.104.2.38/cookies/index.php', {'toto':'tata'});");
+        engine.eval("if( mavar.get('header') == undefined ) { throw 'Header undefined'; }");
+        engine.eval("if( mavar.get('content').indexOf('[toto] => tata') == -1 ) { throw 'cannot find result in post2'; }");
     }
 
     @Test
