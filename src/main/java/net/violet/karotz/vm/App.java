@@ -1,14 +1,12 @@
 package net.violet.karotz.vm;
 
+import com.google.common.io.Closeables;
 import org.apache.commons.cli.*;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Hello world!
@@ -35,7 +33,7 @@ public class App {
         formatter.printHelp("karotz-vm.jar [OPTION]... APP_FOLDER", options);
     }
 
-    public static void main(String[] args) throws ScriptException, NoSuchMethodException, FileNotFoundException, ParseException {
+    public static void main(String[] args) throws ScriptException, NoSuchMethodException, IOException, ParseException {
         Options options = new Options();
 
         options.addOption("s", "simulation", false, "set simulation on (no Karotz needed)");
@@ -65,7 +63,14 @@ public class App {
             showHelp(options);
             System.exit(1);
         }
+        InputStreamReader is = null;
+        try{
+            is = new InputStreamReader(new FileInputStream(new File(dir, "main.js")));
+            getVM().eval(is);
+        }
+        finally {
+            Closeables.closeQuietly(is);
+        }
 
-        getVM().eval(new InputStreamReader(new FileInputStream(new File(dir, "main.js"))));
     }
 }
