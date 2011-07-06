@@ -29,8 +29,7 @@ public class App {
     }
 
     public static void main(String[] args) throws ScriptException, NoSuchMethodException, FileNotFoundException {
-        File f = new File(args[0]);
-        dir = f.getParentFile();
-        getVM().eval(new InputStreamReader(new FileInputStream(f)));
+        dir = new File(args[0]);
+        getVM().eval(new InputStreamReader(new FileInputStream(new File(dir,"main.js"))));
     }
 }
