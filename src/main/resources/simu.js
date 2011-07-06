@@ -65,6 +65,56 @@ karotz.multimedia.play = function( path, callback){
     if(callback)
         setTimeout(1000, function(){ callback("TERMINATED")})
 };
+karotz.multimedia.pause = function( callback){
+    log("karotz should pause sound");
+    if(callback)
+        setTimeout(100, function(){ callback("TERMINATED")})
+};
+karotz.multimedia.resume = function( callback){
+    log("karotz should resume sound");
+    if(callback)
+        setTimeout(100, function(){ callback("TERMINATED")})
+};
+karotz.multimedia.stop = function( callback){
+    log("karotz should stop sound");
+    if(callback)
+        setTimeout(100, function(){ callback("TERMINATED")})
+};
+karotz.multimedia.next = function( callback){
+    log("karotz should select next sound");
+    if(callback)
+        setTimeout(100, function(){ callback("TERMINATED")})
+};
+karotz.multimedia.previous = function( callback){
+    log("karotz should select previous sound");
+    if(callback)
+        setTimeout(100, function(){ callback("TERMINATED")})
+};
+karotz.multimedia.artist = function( callback){
+    log("karotz should retrieve usb key songs of specified artist");
+    if(callback)
+        setTimeout(100, function(){ callback("Bob Marley:LadyGaga")})
+};
+karotz.multimedia.folder = function( callback){
+    log("karotz should retrieve usb key folders");
+    if(callback)
+        setTimeout(100, function(){ callback("/path1:/path2")})
+};
+karotz.multimedia.playlist = function( callback){
+    log("karotz should retrieve usb key playlists");
+    if(callback)
+        setTimeout(100, function(){ callback("playlist1:playlist2")})
+};
+karotz.multimedia.genre = function( callback){
+    log("karotz should retrieve usb key genres");
+    if(callback)
+        setTimeout(100, function(){ callback("genre1:genre2")})
+};
+karotz.multimedia.song = function( callback){
+    log("karotz should retrieve usb key songs");
+    if(callback)
+        setTimeout(100, function(){ callback("song1:song2")})
+};
 
 ///////////////////////////
 karotz.button = { "addListener" : function(callback){} };
