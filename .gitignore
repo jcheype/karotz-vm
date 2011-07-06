@@ -1,0 +1,13 @@
+target
+nbactions.xml
+*.log
+*.log.*
+log4j.properties
+*/console*
+.project
+.settings
+.classpath
+voos-core/bin
+*.iml
+*.ipr
+*.iws
