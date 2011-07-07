@@ -64,6 +64,13 @@ karotz.webcam.photo = function(url){
 }
 
 //////
+karotz.multimedia = {}
+karotz.multimedia.play = function( path, callback){
+    log("karotz multimedia play: " + path);
+    __CLIENT__.sendMultimediaPlay(path, __GEN_VOOS_CALLBACK(callback));
+}
+
+//////
 karotz.asr = {}
 karotz.asr.string= function(grammar, lang, callback){
     grammarList = new java.util.ArrayList();
@@ -95,19 +102,19 @@ karotz.asr.string= function(grammar, lang, callback){
 
 
 ///////////////////////////
-karotz.rfid = {}
+if(!karotz.rfid) karotz.rfid = {};
 karotz.rfid.__LISTENERS = [];
 karotz.rfid.addListener = function(callback){
     karotz.rfid.__LISTENERS.push(callback);
 }
 
-karotz.button = {}
+if(!karotz.button) karotz.button = {};
 karotz.button.__LISTENERS = [];
 karotz.button.addListener = function(callback){
     karotz.button.__LISTENERS.push(callback);
 }
 
-karotz.ears = {}
+if(!karotz.ears) karotz.ears = {};
 karotz.ears.__LISTENERS = [];
 karotz.ears.addListener = function(callback){
     karotz.button.__LISTENERS.push(callback);
@@ -142,4 +149,4 @@ var msgHandler = new net.violet.karotz.client.MessageHandler() {
 
 __CLIENT__.setMessageHandler(msgHandler);
 
-karotz.multimedia = { "addListener" : function(callback){} };
+karotz.multimedia.addListener =  function(callback){};
