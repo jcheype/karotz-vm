@@ -24,10 +24,11 @@ karotz.button.addListener(function(event){ log(event) });
 
 karotz.tts.start("hello tout le monde", "fr", function(event){
     if(event=="TERMINATED"){
-        karotz.multimedia.play("http://www.universal-soundbank.com/mp3/sounds/829.mp3", function(event){ log(event)})
+        karotz.multimedia.play("http://www.universal-soundbank.com/mp3/sounds/829.mp3", function(event){
+             log(event);
+             if(event == "TERMINATED")
+                 karotz.led.pulse("0000FF", 100, 3000, cbPulse);
+         })
     }
 });
 karotz.led.light("FF0000");
-setTimeout(1000, function(){
-    karotz.led.pulse("0000FF", 100, 3000, cbPulse);
-});
