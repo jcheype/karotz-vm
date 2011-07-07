@@ -89,6 +89,13 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.kuali.maven</groupId>
+                <artifactId>kuali-wagon-s3</artifactId>
+                <version>1.0.22</version>
+            </extension>
+        </extensions>
     </build>
 
     <repositories>
@@ -96,7 +103,18 @@
             <id>karotz</id>
             <name>karotz s3 repository</name>
             <url>https://karotz.s3.amazonaws.com/snapshot</url>
-            <snapshots />
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>karotz-s3-maven</id>
+            <name>Karotz s3 repository snapshot</name>
+            <url>s3://karotz/snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
