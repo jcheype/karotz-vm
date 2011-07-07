@@ -18,7 +18,7 @@ public class KarotzTest {
 
     @Before
     public void init() throws NoSuchMethodException, ScriptException {
-        engine = App.getVM();
+        engine = App.getVM(false);
         System.out.println("new test: ");
     }
 

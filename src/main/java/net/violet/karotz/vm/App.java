@@ -1,6 +1,7 @@
 package net.violet.karotz.vm;
 
 import com.google.common.io.Closeables;
+import net.violet.karotz.client.Client;
 import org.apache.commons.cli.*;
 
 import javax.script.ScriptEngine;
@@ -15,7 +16,7 @@ public class App {
     private static final ScriptEngineManager factory = new ScriptEngineManager();
     private static File dir = new File(".");
 
-    public static ScriptEngine getVM() throws NoSuchMethodException, ScriptException {
+    public static ScriptEngine getVM(boolean isConnected) throws NoSuchMethodException, ScriptException {
         ScriptEngine engine = factory.getEngineByName("JavaScript");
         HttpJS httpJS = new HttpJS();
         engine.put("__http", httpJS);
@@ -24,7 +25,12 @@ public class App {
 
         engine.eval(new InputStreamReader(App.class.getResourceAsStream("/json2.js")));
         engine.eval(new InputStreamReader(App.class.getResourceAsStream("/init.js")));
-        engine.eval(new InputStreamReader(App.class.getResourceAsStream("/simu.js")));
+        if(!isConnected)
+            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/simu.js")));
+        else{
+            engine.put("__CLIENT__", new Client());
+            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/karotz.js")));
+        }
         return engine;
     }
 
@@ -66,7 +72,7 @@ public class App {
         InputStreamReader is = null;
         try{
             is = new InputStreamReader(new FileInputStream(new File(dir, "main.js")));
-            getVM().eval(is);
+            getVM(cmd.hasOption("karotz")).eval(is);
         }
         finally {
             Closeables.closeQuietly(is);
