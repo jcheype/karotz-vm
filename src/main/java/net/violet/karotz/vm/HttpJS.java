@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class HttpJS {
         byte buffer[] = new byte[1024];
         int read;
         while((read = is.read(buffer))>0 ){
-            sb.append(new String(buffer, 0, read));
+            sb.append(new String(buffer, 0, read, "UTF-8"));
         }
         return sb.toString();
     }
@@ -49,7 +50,7 @@ public class HttpJS {
         wr.flush();
 
         // Get the response
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
         StringBuilder sb2 = new StringBuilder();
         String line;
         while ((line = rd.readLine()) != null) {
@@ -87,7 +88,7 @@ public class HttpJS {
         wr.flush();
         
         // Get the response
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
         StringBuilder sb2 = new StringBuilder();
         String line;
         while ((line = rd.readLine()) != null) {

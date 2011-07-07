@@ -7,7 +7,11 @@ import org.apache.commons.cli.*;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 /**
  * Hello world!
@@ -53,9 +57,9 @@ public class App {
             showHelp(options);
             System.exit(0);
         }
-        if (cmd.hasOption("karotz")) {
-            throw new UnsupportedOperationException("not supported yet");
-        }
+//        if (cmd.hasOption("karotz")) {
+//            throw new UnsupportedOperationException("not supported yet");
+//        }
 
         if (cmd.getArgs().length < 1) {
             System.out.println("Missing APP_FOLDER arg");
@@ -71,7 +75,7 @@ public class App {
         }
         InputStreamReader is = null;
         try{
-            is = new InputStreamReader(new FileInputStream(new File(dir, "main.js")));
+            is = new InputStreamReader(new FileInputStream(new File(dir, "main.js")), Charset.forName("UTF-8"));
             getVM(cmd.hasOption("karotz")).eval(is);
         }
         finally {

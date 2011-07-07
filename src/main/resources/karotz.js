@@ -39,8 +39,107 @@ karotz.tts.stop = function(callback){
     throw "NOT IMPLEMENTED"
 }
 
+//////
 karotz.led = {}
 karotz.led.light = function(color){
     log("karotz led is: " + color);
     __CLIENT__.sendLed(color);
 }
+
+karotz.led.fade = function(color, duration, callback){
+    log("karotz led fade: " + color);
+        __CLIENT__.sendLedFade(color, duration, __GEN_VOOS_CALLBACK(callback));
+}
+
+karotz.led.pulse = function(color, period, duration, callback){
+    log("karotz led pulse: " + color);
+    __CLIENT__.sendLedPulse(color, period, duration, __GEN_VOOS_CALLBACK(callback));
+}
+
+//////
+karotz.webcam = {}
+karotz.webcam.photo = function(url){
+    log("karotz webcam photo: " + url);
+    __CLIENT__.sendPhoto(url);
+}
+
+//////
+karotz.asr = {}
+karotz.asr.string= function(grammar, lang, callback){
+    grammarList = new java.util.ArrayList();
+    grammarList.add(grammar);
+
+    var voosCallback = null;
+    if(callback){
+        voosCallback = new net.violet.karotz.client.VoosCallBack() {
+            onEvent: function(voosMsg){
+                if(!voosMsg.hasAsrCallback())
+                    return;
+                log("RECO: " + voosMsg.getAsrCallback().getRecognitionCount());
+                log("RECO: " + voosMsg.toString());
+                var tmpResult = voosMsg.getAsrCallback().getRecognition(0);
+
+                var asrResult = {
+                    confident: tmpResult.getConfident(),
+                    text: tmpResult.getText(),
+                    semantic: tmpResult.getSemantic()
+                };
+                callback(asrResult);
+            }
+        };
+    }
+
+    __CLIENT__.sendAsr(grammarList, lang, voosCallback);
+}
+
+
+
+///////////////////////////
+karotz.rfid = {}
+karotz.rfid.__LISTENERS = [];
+karotz.rfid.addListener = function(callback){
+    karotz.rfid.__LISTENERS.push(callback);
+}
+
+karotz.button = {}
+karotz.button.__LISTENERS = [];
+karotz.button.addListener = function(callback){
+    karotz.button.__LISTENERS.push(callback);
+}
+
+karotz.ears = {}
+karotz.ears.__LISTENERS = [];
+karotz.ears.addListener = function(callback){
+    karotz.button.__LISTENERS.push(callback);
+}
+
+var msgHandler = new net.violet.karotz.client.MessageHandler() {
+    onRfid:     function(rfidCallback){
+        var data = {};
+        data.id = rfidCallback.getId();
+        if(rfidCallback.hasDirection()){data.direction = rfidCallback.getDirection().getNumber()}
+        if(rfidCallback.hasApp()){data.app = rfidCallback.getApp();}
+        if(rfidCallback.hasType()){ data.type = rfidCallback.getType().getNumber()}
+        if(rfidCallback.hasPict()){ data.pict = rfidCallback.getPict()}
+        if(rfidCallback.hasColor()){ data.color = rfidCallback.getColor().getNumber()}
+
+        for(var i=0; i<karotz.rfid.__LISTENERS.length;i++ ){
+            karotz.rfid.__LISTENERS[i](data)
+        }
+    },
+    onEars:     function(earsCallback){
+        for(var i=0; i<karotz.ears.__LISTENERS.length;i++ ){
+            karotz.ears.__LISTENERS[i](earsCallback.getType().name())
+        }
+    },
+    onButton:   function(buttonCallback){
+        for(var i=0; i<karotz.button.__LISTENERS.length;i++ ){
+            karotz.button.__LISTENERS[i](buttonCallback.getType().name())
+        }
+    },
+    onMessade:  function(voosMsg){}
+}
+
+__CLIENT__.setMessageHandler(msgHandler);
+
+karotz.multimedia = { "addListener" : function(callback){} };

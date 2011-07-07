@@ -32,6 +32,6 @@ public class KarotzConnectedTest {
     @Test
     public void script() throws ScriptException, InterruptedException {
         engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testKarotz.js")));
-        Thread.sleep(5000);
+        Thread.sleep(15000);
     }
 }
