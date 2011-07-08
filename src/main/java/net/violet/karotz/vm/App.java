@@ -26,9 +26,9 @@ public class App {
 
         engine.eval(new InputStreamReader(App.class.getResourceAsStream("/json2.js")));
         engine.eval(new InputStreamReader(App.class.getResourceAsStream("/init.js")));
-        if(!isConnected)
+        if (!isConnected)
             engine.eval(new InputStreamReader(App.class.getResourceAsStream("/simu.js")));
-        else{
+        else {
             engine.put("__CLIENT__", new Client());
             engine.eval(new InputStreamReader(App.class.getResourceAsStream("/karotz.js")));
         }
@@ -45,6 +45,7 @@ public class App {
 
         options.addOption("s", "simulation", false, "set simulation on (no Karotz needed)");
         options.addOption("k", "karotz", false, "Karotz connection, set simulation off");
+        options.addOption("i", "include", true, "Javascript file included before main.js");
         options.addOption("h", "help", false, "print this help");
 
         CommandLineParser parser = new PosixParser();
@@ -71,11 +72,17 @@ public class App {
             System.exit(1);
         }
         InputStreamReader is = null;
-        try{
+        try {
+            ScriptEngine vm = getVM(cmd.hasOption("karotz"));
+            if (cmd.hasOption("include")) {
+                is = new InputStreamReader(new FileInputStream(new File(dir, cmd.getOptionValue("include"))), Charset.forName("UTF-8"));
+                vm.eval(is);
+                Closeables.closeQuietly(is);
+            }
+
             is = new InputStreamReader(new FileInputStream(new File(dir, "main.js")), Charset.forName("UTF-8"));
-            getVM(cmd.hasOption("karotz")).eval(is);
-        }
-        finally {
+            vm.eval(is);
+        } finally {
             Closeables.closeQuietly(is);
         }
 
