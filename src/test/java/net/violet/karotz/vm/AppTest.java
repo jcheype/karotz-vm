@@ -80,6 +80,11 @@ public class AppTest
     public void fileRead() throws ScriptException {
         engine.eval("data = file.read('src/test/resources/test1.js'); log(data.text)");
     }
+    
+    @Test
+    public void fileWrite() throws ScriptException {
+        engine.eval("file.write('target/test.data', 'taralabiscotte'); log('test write');");
+    }
 
     @Test
     public void ping() throws ScriptException {

@@ -2,8 +2,10 @@ package net.violet.karotz.vm;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,5 +36,11 @@ public class FileJs {
             sb.append(new String(buffer, 0, read));
         }
         return new Data(sb.toString());
+    }
+    
+    public void write(String filename, String data) throws IOException {
+        OutputStream os = new FileOutputStream(filename);
+        os.write(data.getBytes());
+        os.flush();
     }
 }
