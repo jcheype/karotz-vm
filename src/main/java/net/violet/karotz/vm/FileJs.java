@@ -1,7 +1,7 @@
 package net.violet.karotz.vm;
 
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,9 +26,14 @@ public class FileJs {
             return text;
         }
     }
+    
+    private final File dir;
 
+    public FileJs(File dir) {
+        this.dir = dir;
+    }
     public Data read(String filename) throws IOException {
-        InputStream is = new FileInputStream(filename);
+        InputStream is = new FileInputStream(new File(dir, filename));
         StringBuilder sb = new StringBuilder();
         byte buffer[] = new byte[1024];
         while(is.available() > 0){
@@ -39,7 +44,7 @@ public class FileJs {
     }
     
     public void write(String filename, String data) throws IOException {
-        OutputStream os = new FileOutputStream(filename);
+        OutputStream os = new FileOutputStream(new File(dir, filename));
         os.write(data.getBytes());
         os.flush();
     }

@@ -21,7 +21,7 @@ public class App {
         ScriptEngine engine = factory.getEngineByName("JavaScript");
         HttpJS httpJS = new HttpJS();
         engine.put("__http", httpJS);
-        engine.put("file", new FileJs());
+        engine.put("file", new FileJs(dir));
         engine.put("___UTILS__", new UtilJs(engine, dir));
 
         engine.eval(new InputStreamReader(App.class.getResourceAsStream("/json2.js")));
