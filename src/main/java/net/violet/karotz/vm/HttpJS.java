@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -21,11 +22,7 @@ import java.util.Map;
  */
 public class HttpJS {
 
-    public String get(String urlString) throws IOException {
-        URL url = new URL(urlString);
-        URLConnection connection = url.openConnection();
-        connection.connect();
-        InputStream is = connection.getInputStream();
+    private String read(InputStream is) throws IOException {
         StringBuilder sb = new StringBuilder();
         byte buffer[] = new byte[1024];
         int read;
@@ -33,6 +30,13 @@ public class HttpJS {
             sb.append(new String(buffer, 0, read, "UTF-8"));
         }
         return sb.toString();
+    }
+    
+    public String get(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        URLConnection connection = url.openConnection();
+        connection.connect();
+        return read(connection.getInputStream());
     }
 
     public String post(String urlString, Map<String, String> params) throws IOException{
@@ -67,9 +71,18 @@ public class HttpJS {
         URLConnection connection = url.openConnection();
         connection.connect();
         HashMap<String, Object> res = new HashMap<String, Object>(2);
+        
         Map<String, List<String>> hl = connection.getHeaderFields();
-        res.put("header", hl);
-        res.put("content", connection.getContent());
+        StringBuilder sb = new StringBuilder();
+        for( String key : hl.keySet() ) {
+            for(String val : hl.get(key) ) {
+                if( key != null && val != null ) {
+                    sb.append( URLEncoder.encode(key, "UTF-8") + ": " + URLEncoder.encode(val, "UTF-8") + "\n");
+                }
+            }
+        }
+        res.put("header", sb.toString());
+        res.put("content", read(((HttpURLConnection)connection).getInputStream()));
 
         return res;
     }
@@ -98,7 +111,17 @@ public class HttpJS {
         rd.close();
         
         HashMap<String, Object> res = new HashMap<String, Object>(2);
-        res.put("header", conn.getHeaderFields());
+        
+        Map<String, List<String>> hl = conn.getHeaderFields();
+        StringBuilder sb3 = new StringBuilder();
+        for( String key : hl.keySet() ) {
+            for(String val : hl.get(key) ) {
+                if( key != null && val != null ) {
+                    sb3.append( URLEncoder.encode(key, "UTF-8") + ": " + URLEncoder.encode(val, "UTF-8") + "\n");
+                }
+            }
+        }
+        res.put("header", sb3.toString());
         res.put("content", sb2.toString());
         
         return res;

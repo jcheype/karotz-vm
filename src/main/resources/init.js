@@ -16,15 +16,19 @@ http.post = function(url, params) {
     for( key in params ) {
         javaparams.put(key, params[key]);
     }
-    return __http.post(url, javaparams);
+    return "" + __http.post(url, javaparams);
 };
 
 http.get = function(url) {
-    return __http.get(url);
+    return "" + __http.get(url);
 }
 
 http.get2 = function(url) {
-    return __http.get2(url);
+    var temp = __http.get2(url);
+    var res = {};
+    res.header = "" + temp.get('header');
+    res.content = "" + temp.get('content');
+    return res;
 }
 
 http.post2 = function(url, params) {
@@ -32,5 +36,9 @@ http.post2 = function(url, params) {
     for( key in params ) {
         javaparams.put(key, params[key]);
     }
-    return __http.post2(url, javaparams);
+    var temp = __http.post2(url, javaparams);
+    var res = {}
+    res.header = "" + temp.get('header');
+    res.content = "" + temp.get('content');
+    return res;
 }
