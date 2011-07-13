@@ -51,8 +51,8 @@ public class AppTest
     public void httpPost2() throws ScriptException {
         System.out.println("httpPost2");
         engine.eval("var mavar = http.post2('http://10.104.2.38/cookies/index.php', {'toto':'tata'});");
-        engine.eval("if( mavar.get('header') == undefined ) { throw 'Header undefined'; }");
-        engine.eval("if( mavar.get('content').indexOf('[toto] => tata') == -1 ) { throw 'cannot find result in post2'; }");
+        engine.eval("if( mavar['header'] == undefined ) { throw 'Header undefined'; }");
+        engine.eval("if( mavar['content'].indexOf('[toto] => tata') == -1 ) { throw 'cannot find result in post2'; }");
     }
 
     @Test
