@@ -42,7 +42,7 @@ public class HttpJS {
     public String post(String urlString, Map<String, String> params) throws IOException{
         StringBuilder sb = new StringBuilder();
         for(String key : params.keySet() ) {
-            sb.append( URLEncoder.encode(key, "UTF-8") + "=" + URLEncoder.encode(params.get(key), "UTF-8") + "&");
+            sb.append( key + "=" + params.get(key) + "&");
         }
 
         // Send data
@@ -77,7 +77,7 @@ public class HttpJS {
         for( String key : hl.keySet() ) {
             for(String val : hl.get(key) ) {
                 if( key != null && val != null ) {
-                    sb.append( URLEncoder.encode(key, "UTF-8") + ": " + URLEncoder.encode(val, "UTF-8") + "\n");
+                    sb.append( key+ ": " + val + "\n");
                 }
             }
         }
@@ -89,7 +89,7 @@ public class HttpJS {
     public Map<String, Object> post2(String urlString, Map params) throws IOException {
         StringBuilder sb = new StringBuilder();
         for(Object key : params.keySet() ) {
-            sb.append( URLEncoder.encode((String)key, "UTF-8") + "=" + URLEncoder.encode((String)(params.get(key)), "UTF-8") + "&");
+            sb.append( key + "=" + params.get(key) + "&");
         }
 
         // Send data
@@ -117,7 +117,7 @@ public class HttpJS {
         for( String key : hl.keySet() ) {
             for(String val : hl.get(key) ) {
                 if( key != null && val != null ) {
-                    sb3.append( URLEncoder.encode(key, "UTF-8") + ": " + URLEncoder.encode(val, "UTF-8") + "\n");
+                    sb3.append( key + ": " + val + "\n");
                 }
             }
         }
