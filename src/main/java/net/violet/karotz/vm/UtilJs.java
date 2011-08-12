@@ -13,8 +13,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import org.apache.mina.util.Base64;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by IntelliJ IDEA.
@@ -77,5 +78,4 @@ public class UtilJs {
         String calcSignature = new String(Base64.encodeBase64(digest), Charset.forName("ASCII"));
         return calcSignature;
     }
-
 }

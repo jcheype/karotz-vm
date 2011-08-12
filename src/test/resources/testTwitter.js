@@ -26,7 +26,8 @@ var socialok = function(data){
     setTimeout(2000, function(){karotz.start(callback, {});});
 //    var sign = social.twitter.sign('blabla');
 //    log("social.twitter.sendSign sign: " + sign.toString());
-    getNbLists();
+//    getNbLists();
+    social.twitter.GetHomeTimeline(10);
 //startRead();
 
 }
