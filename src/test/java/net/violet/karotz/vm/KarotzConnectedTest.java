@@ -29,9 +29,18 @@ public class KarotzConnectedTest {
         System.out.println("\n==============\n\n");
     }
 
-    @Test
+//    @Test
     public void script() throws ScriptException, InterruptedException {
         engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testKarotz.js")));
+        
         Thread.sleep(15000);
+    }
+    
+    
+    @Test
+    public void scriptSocial() throws ScriptException, InterruptedException {
+        engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testSocial.js")));
+        
+        Thread.sleep(5000);
     }
 }

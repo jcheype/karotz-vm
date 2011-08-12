@@ -181,7 +181,53 @@ karotz.asr.string= function(grammar, lang, callback){
     __CLIENT__.sendAsr(grammarList, lang, voosCallback);
 }
 
-
+/////////
+social = {}
+social.facebook = {}
+social.twitter = {}
+social.soundcloud = {}
+social.init = function(callback, data) {
+    log("karotz social init karotz.js");
+    var voosCallback = null;
+    if(callback){
+        voosCallback = new net.violet.karotz.client.VoosCallBack() {
+            onEvent: function(voosMsg){
+                log("call social callback");
+                if(!voosMsg.hasSocial())
+                    return;
+                log("SocialQuery init: " + voosMsg.getSocial());
+               
+                social.__social = voosMsg.getSocial();
+                if( voosMsg.getSocial().hasFacebookToken()) {
+                    social.facebook.token = '' + voosMsg.getSocial().getFacebookToken()    
+                    log('karotz.js : facebook token : ' + social.facebook.token);
+                }
+                if( voosMsg.getSocial().hasTwitterToken()) {
+                    social.twitter.oauth_token = '' + voosMsg.getSocial().getTwitterToken();
+                    social.twitter.oauth_consumer_key = '' + voosMsg.getSocial().getTwitterConsumerKey();
+                    social.twitter.tokensecret = '' + voosMsg.getSocial().getTwitterTokenSecret();
+                    social.twitter.consumersecret = '' + voosMsg.getSocial().getTwitterConsumerSecret();    
+                    log('karotz.js : twitter token : ' + social.twitter);
+                    
+                }
+                if( voosMsg.getSocial().hasSoundcloudToken()) {
+                    social.soundcloud.token = '' + voosMsg.getSocial().getSoundcloudToken();
+                }
+                callback(data);
+            }
+        };
+    }
+    
+    __CLIENT__.socialInit(voosCallback);
+}
+social.twitter.sign = function(data) {
+    log('social.twitter.sign karotz.js');
+    log('karotz.js : Signature with key=' + social.twitter.consumersecret + '&' + social.twitter.tokensecret);
+    log('karotz.js : Signature with data='+ data);
+    log('karotz.js : Signature with result=' + ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret).length);
+    
+    return ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret);
+}
 
 ///////////////////////////
 if(!karotz.rfid) karotz.rfid = {};
@@ -208,9 +254,9 @@ var msgHandler = new net.violet.karotz.client.MessageHandler() {
         data.id = rfidCallback.getId();
         if(rfidCallback.hasDirection()){data.direction = rfidCallback.getDirection().getNumber()}
         if(rfidCallback.hasApp()){data.app = rfidCallback.getApp();}
-        if(rfidCallback.hasType()){ data.type = rfidCallback.getType().getNumber()}
-        if(rfidCallback.hasPict()){ data.pict = rfidCallback.getPict()}
-        if(rfidCallback.hasColor()){ data.color = rfidCallback.getColor().getNumber()}
+        if(rfidCallback.hasType()){data.type = rfidCallback.getType().getNumber()}
+        if(rfidCallback.hasPict()){data.pict = rfidCallback.getPict()}
+        if(rfidCallback.hasColor()){data.color = rfidCallback.getColor().getNumber()}
 
         for(var i=0; i<karotz.rfid.__LISTENERS.length;i++ ){
             karotz.rfid.__LISTENERS[i](data)

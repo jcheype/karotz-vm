@@ -133,4 +133,12 @@ public class KarotzTest {
         engine.eval("karotz.multimedia.song(function(event){ log(event);});");
         Thread.sleep(100);
     }
+    
+    @Test
+    public void socialInit() throws ScriptException, InterruptedException {
+        engine.eval("var data = karotz.social.init(function(event){ log(event); });");
+        engine.eval("if( data == undefined ) { throw 'social undefined'; }"
+                + " else { print(data.type) }");
+        Thread.sleep(1000);
+    }
 }

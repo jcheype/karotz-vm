@@ -23,6 +23,7 @@ public class App {
         engine.put("__http", httpJS);
         engine.put("file", new FileJs(dir));
         engine.put("___UTILS__", new UtilJs(engine, dir));
+//        engine.put("__social", new SocialJs());
 
         engine.eval(new InputStreamReader(App.class.getResourceAsStream("/json2.js")));
         engine.eval(new InputStreamReader(App.class.getResourceAsStream("/init.js")));

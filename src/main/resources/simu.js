@@ -117,6 +117,21 @@ karotz.multimedia.song = function( callback){
 };
 
 ///////////////////////////
+//karotz.social = {}
+//karotz.social.init = function( callback) {
+//    log("karotz should get social info for init");
+//    if( callback )
+//        setTimeout(100, function(){ callback("TERMINATED")})
+//};
+//karotz.social.twitter = {}
+//karotz.social.twitter.sign = function(pseudo, pass){
+//    log("karotz is signing on twitter with: " + pseudo + " / " + pass)
+//};
+//karotz.social.facebook = {}
+//karotz.social.soundcloud = {}
+
+
+///////////////////////////
 karotz.button = { "addListener" : function(callback){} };
 karotz.rfid = { "addListener" : function(callback){} };
 karotz.ears.addListener = function(callback){} ;
