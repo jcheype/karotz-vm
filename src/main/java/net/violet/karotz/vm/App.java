@@ -3,8 +3,11 @@ package net.violet.karotz.vm;
 import com.google.common.io.Closeables;
 import net.violet.karotz.client.Client;
 import org.apache.commons.cli.*;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ScriptableObject;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.File;
@@ -17,21 +20,56 @@ public class App {
     private static final ScriptEngineManager factory = new ScriptEngineManager();
     private static File dir = new File(".");
 
+    public static ScriptableObject getVMRhino(boolean isConnected) throws IOException {
+        Context context = Context.enter();
+        ScriptableObject scope = context.initStandardObjects();
+
+        HttpJS http = new HttpJS();
+        Object httpJS = Context.javaToJS(http, scope);
+        ScriptableObject.putProperty(scope, "__http", httpJS);
+
+        FileJs file = new FileJs(dir);
+        Object fileJS = Context.javaToJS(file, scope);
+        ScriptableObject.putProperty(scope, "file", fileJS);
+
+        UtilJs2 util = new UtilJs2(scope, dir);
+        Object utilJS = Context.javaToJS(util, scope);
+        ScriptableObject.putProperty(scope, "___UTILS__", utilJS);
+
+        Object wrappedOut = Context.javaToJS(System.out, scope);
+        ScriptableObject.putProperty(scope, "out", wrappedOut);
+
+        context.evaluateReader(scope, new InputStreamReader(App.class.getResourceAsStream("/init.js"), Charset.forName("UTF-8")), "init.js", 0, null);
+        if (!isConnected)
+            context.evaluateReader(scope, new InputStreamReader(App.class.getResourceAsStream("/simu.js"), Charset.forName("UTF-8")), "simu.js", 0, null);
+        else {
+            Client client = new Client();
+            Object clientJS = Context.javaToJS(client, scope);
+            ScriptableObject.putProperty(scope, "__CLIENT__", clientJS);
+            context.evaluateReader(scope, new InputStreamReader(App.class.getResourceAsStream("/karotz.js"), Charset.forName("UTF-8")), "karotz.js", 0, null);
+        }
+        return scope;
+    }
+
     public static ScriptEngine getVM(boolean isConnected) throws NoSuchMethodException, ScriptException {
-        ScriptEngine engine = factory.getEngineByName("JavaScript");
+        for (ScriptEngineFactory f : factory.getEngineFactories()) {
+            System.out.println("name: " + f.getEngineName());
+            System.out.println("language: " + f.getLanguageName());
+        }
+        ScriptEngine engine = factory.getEngineByName("rhino");
         HttpJS httpJS = new HttpJS();
         engine.put("__http", httpJS);
         engine.put("file", new FileJs(dir));
         engine.put("___UTILS__", new UtilJs(engine, dir));
 //        engine.put("__social", new SocialJs());
 
-        engine.eval(new InputStreamReader(App.class.getResourceAsStream("/json2.js")));
-        engine.eval(new InputStreamReader(App.class.getResourceAsStream("/init.js")));
+        //engine.eval(new InputStreamReader(App.class.getResourceAsStream("/json2.js"), Charset.forName("UTF-8")));
+        engine.eval(new InputStreamReader(App.class.getResourceAsStream("/init.js"), Charset.forName("UTF-8")));
         if (!isConnected)
-            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/simu.js")));
+            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/simu.js"), Charset.forName("UTF-8")));
         else {
             engine.put("__CLIENT__", new Client());
-            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/karotz.js")));
+            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/karotz.js"), Charset.forName("UTF-8")));
         }
         return engine;
     }
@@ -74,15 +112,17 @@ public class App {
         }
         InputStreamReader is = null;
         try {
-            ScriptEngine vm = getVM(cmd.hasOption("karotz"));
+            ScriptableObject scope = getVMRhino(cmd.hasOption("karotz"));
             if (cmd.hasOption("include")) {
                 is = new InputStreamReader(new FileInputStream(new File(dir, cmd.getOptionValue("include"))), Charset.forName("UTF-8"));
-                vm.eval(is);
+
+                Context.getCurrentContext().evaluateReader(scope, is, cmd.getOptionValue("include"), 0, null);
+
                 Closeables.closeQuietly(is);
             }
 
             is = new InputStreamReader(new FileInputStream(new File(dir, "main.js")), Charset.forName("UTF-8"));
-            vm.eval(is);
+            Context.getCurrentContext().evaluateReader(scope, is, "main.js", 0, null);
         } finally {
             Closeables.closeQuietly(is);
         }

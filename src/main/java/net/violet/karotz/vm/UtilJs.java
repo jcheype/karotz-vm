@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class UtilJs {
     public void include(String filename) throws FileNotFoundException, ScriptException {
         File script = new File(dir,filename);
         //System.out.println(script.getAbsolutePath());
-        engine.eval(new InputStreamReader(new FileInputStream(script)));
+        engine.eval(new InputStreamReader(new FileInputStream(script), Charset.forName("UTF-8")));
     }
 
     public void exit(){
