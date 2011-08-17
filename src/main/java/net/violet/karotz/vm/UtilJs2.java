@@ -48,7 +48,7 @@ public class UtilJs2 {
         return new TimerTask() {
             @Override
             public void run() {
-                Boolean result = runnable.run();
+                Boolean result = new Boolean(runnable.run().toString());
                 //System.out.println("result: " + result);
                 if (result != null && result) {
                     timer.schedule(newTimerTask(delay, runnable), delay);
