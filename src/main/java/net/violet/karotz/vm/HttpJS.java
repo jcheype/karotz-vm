@@ -1,15 +1,27 @@
 package net.violet.karotz.vm;
 
-import java.io.BufferedReader;
+
+import org.apache.http.*;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,109 +34,170 @@ import java.util.Map;
  */
 public class HttpJS {
 
+    private HttpClient getClient() throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
+//        TrustStrategy trustStrategy = new
+//                TrustStrategy(){
+//                    public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+//                        return true;
+//                    }
+//                };
+//        X509HostnameVerifier hostnameVerifier = new
+//                AllowAllHostnameVerifier();
+//        SSLSocketFactory sslSf = new
+//                SSLSocketFactory(trustStrategy, hostnameVerifier);
+//
+//        Scheme https = new Scheme("https", 443,
+//                sslSf);
+//        SchemeRegistry schemeRegistry = new SchemeRegistry();
+//        schemeRegistry.register(https);
+//
+//        ClientConnectionManager connection = new
+//                ThreadSafeClientConnManager(schemeRegistry);
+
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        return httpClient;
+    }
+
     private String read(InputStream is) throws IOException {
+        return read(is, "UTF-8");
+    }
+
+    private String read(InputStream is, String contentEncoding) throws IOException {
+        System.out.println("encoding: " + contentEncoding);
         StringBuilder sb = new StringBuilder();
         byte buffer[] = new byte[1024];
         int read;
-        while((read = is.read(buffer))>0 ){
-            sb.append(new String(buffer, 0, read, "UTF-8"));
+        while ((read = is.read(buffer)) > 0) {
+            sb.append(new String(buffer, 0, read, contentEncoding));
         }
         return sb.toString();
     }
-    
-    public String get(String urlString) throws IOException {
-        URL url = new URL(urlString);
-        URLConnection connection = url.openConnection();
-        connection.connect();
-        return read(connection.getInputStream());
+
+    private byte[] readByte(InputStream is) throws IOException {
+        ByteArrayOutputStream ba = new ByteArrayOutputStream();
+        byte buffer[] = new byte[1024];
+        int read;
+        while ((read = is.read(buffer)) != -1) {
+            ba.write(buffer, 0, read);
+        }
+        return ba.toByteArray();
     }
 
-    public String post(String urlString, Map<String, String> params) throws IOException{
-        StringBuilder sb = new StringBuilder();
-        for(String key : params.keySet() ) {
-            sb.append( key + "=" + params.get(key) + "&");
+    private Header[] map2Headers(Map<String, String> headersMap) {
+        Header headers[] = new Header[headersMap.size()];
+        int i = 0;
+        for (Map.Entry<String, String> entry : headersMap.entrySet()) {
+            headers[i++] = new BasicHeader(entry.getKey(), entry.getValue());
         }
-
-        // Send data
-        URL url = new URL(urlString);
-        URLConnection conn = url.openConnection();
-        conn.setDoOutput(true);
-        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-        wr.write(sb.substring(0, Math.max(0, sb.length()-1)));
-        wr.flush();
-
-        // Get the response
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
-        StringBuilder sb2 = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            sb2.append(line);
-        }
-        wr.close();
-        rd.close();
-
-        return sb2.toString();
+        return headers;
     }
-    
-    public Map<String, Object> get2(String urlString) throws IOException {
-        URL url = new URL(urlString);
-        URLConnection connection = url.openConnection();
-        connection.connect();
-        HashMap<String, Object> res = new HashMap<String, Object>(2);
-        
-        Map<String, List<String>> hl = connection.getHeaderFields();
+
+    private String headers2String(HttpMessage httpMessage) {
         StringBuilder sb = new StringBuilder();
-        for( String key : hl.keySet() ) {
-            for(String val : hl.get(key) ) {
-                if( key != null && val != null ) {
-                    sb.append( key+ ": " + val + "\n");
-                }
-            }
+        for (Header header : httpMessage.getAllHeaders()) {
+            sb.append(header.getName());
+            sb.append(": ");
+            sb.append(header.getValue());
+            sb.append("\n");
         }
+
+        return sb.toString();
+    }
+
+    public String get(String urlString, Map<String, String> headers) throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
+        return get2(urlString, headers).get("content");
+    }
+
+    public String post(String urlString, Map<String, String> params, Map<String, String> headers, Boolean isMultipart) throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
+        return post2(urlString, params, headers, isMultipart).get("content");
+    }
+
+    public Map<String, String> get2(String urlString, Map<String, String> headersMap) throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
+        HttpClient httpclient = getClient();
+
+        HttpGet httpGet = new HttpGet(urlString);
+
+        if (headersMap != null) {
+            httpGet.setHeaders(map2Headers(headersMap));
+        }
+
+        HttpResponse response = httpclient.execute(httpGet);
+
+
+        StringBuilder sb = new StringBuilder();
+        for (Header header : response.getAllHeaders()) {
+            sb.append(header.getName());
+            sb.append(": ");
+            sb.append(header.getValue());
+            sb.append("\n");
+        }
+
+        Header contentEncoding = response.getEntity().getContentEncoding();
+        String encoding = "UTF-8";
+        if (contentEncoding != null)
+            encoding = contentEncoding.getValue();
+
+        Map<String, String> res = new HashMap<String, String>();
         res.put("header", sb.toString());
-        res.put("content", read(((HttpURLConnection)connection).getInputStream()));
-
+        res.put("content", read(response.getEntity().getContent(), encoding));
         return res;
     }
-    public Map<String, Object> post2(String urlString, Map params) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        for(Object key : params.keySet() ) {
-            sb.append( key + "=" + params.get(key) + "&");
-        }
 
-        // Send data
-        URL url = new URL(urlString);
-        URLConnection conn = url.openConnection();
-        conn.setDoOutput(true);
-        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-        wr.write(sb.toString().substring(0, Math.max(0, sb.length()-1)));
-        wr.flush();
-        
-        // Get the response
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
-        StringBuilder sb2 = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            sb2.append(line);
-        }
-        wr.close();
-        rd.close();
-        
-        HashMap<String, Object> res = new HashMap<String, Object>(2);
-        
-        Map<String, List<String>> hl = conn.getHeaderFields();
-        StringBuilder sb3 = new StringBuilder();
-        for( String key : hl.keySet() ) {
-            for(String val : hl.get(key) ) {
-                if( key != null && val != null ) {
-                    sb3.append( key + ": " + val + "\n");
-                }
+    public Map<String, String> post2(String urlString, Map<String, String> params, Map<String, String> headersMap, Boolean isMultipart) throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
+        HttpClient httpclient = getClient();
+        httpclient.getParams().setParameter("http.protocol.version", HttpVersion.HTTP_1_1);
+
+        HttpPost httpPost = new HttpPost(urlString);
+
+        if (headersMap == null)
+            headersMap = new HashMap<String, String>();
+        HttpEntity httpEntity;
+
+        if (isMultipart) {
+            MultipartEntity mpe = new MultipartEntity();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                if (entry.getValue().startsWith("__PATH:")) {
+                    String filename = entry.getValue().substring("__PATH:".length());
+                    InputStream stream = getClass().getResourceAsStream("/" + filename);
+
+                    mpe.addPart(entry.getKey(), new ByteArrayBody(readByte(stream), filename));
+                } else
+                    mpe.addPart(entry.getKey(), new StringBody(entry.getValue(), "", Charset.forName("UTF-8")));
             }
+            httpEntity = mpe;
+        } else {
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+            }
+            httpEntity = new UrlEncodedFormEntity(nameValuePairs, "UTF-8");
         }
-        res.put("header", sb3.toString());
-        res.put("content", sb2.toString());
-        
+        httpPost.setEntity(httpEntity);
+
+        if (headersMap != null)
+            httpPost.setHeaders(map2Headers(headersMap));
+
+        HttpResponse response = httpclient.execute(httpPost);
+
+        StringBuilder sb = new StringBuilder();
+        for (Header header : response.getAllHeaders()) {
+            sb.append(header.getName());
+            sb.append(": ");
+            sb.append(header.getValue());
+            sb.append("\n");
+        }
+
+        Header contentEncoding = response.getEntity().getContentEncoding();
+        String encoding = "UTF-8";
+        if (contentEncoding != null)
+            encoding = contentEncoding.getValue();
+
+        Map<String, String> res = new HashMap<String, String>();
+        res.put("header", sb.toString());
+        res.put("content", read(response.getEntity().getContent(), encoding));
+
         return res;
     }
-    
+
+
 }
