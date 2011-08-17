@@ -48,8 +48,7 @@ public class UtilJs2 {
         return new TimerTask() {
             @Override
             public void run() {
-
-                Boolean result = new Boolean(runnable.run().toString());
+                Boolean result = runnable.run();
                 //System.out.println("result: " + result);
                 if (result != null && result) {
                     timer.schedule(newTimerTask(delay, runnable), delay);
@@ -63,7 +62,7 @@ public class UtilJs2 {
     }
 
     interface RunnableJS {
-        public Object run();
+        public Boolean run();
     }
     
     public String doHMAC(String dataToSign, String secretKey) throws NoSuchAlgorithmException, InvalidKeyException
