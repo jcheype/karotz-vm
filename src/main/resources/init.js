@@ -6,44 +6,37 @@ ping = function(){};
 
 setTimeout = function(delay, f){ return ___UTILS__.setTimeout(delay, f) };
 
-log = function(msg){ out.println(msg)};
+log = function(msg){ print(msg+"\n")};
 
 exit = function(){ return ___UTILS__.exit() };
 
 http = {}
-http.post = function(url, params, headers, isMultipart) {
-    return http.post2(url, params, headers, isMultipart).content;
+http.post = function(url, params) {
+    var javaparams = new java.util.HashMap();
+    for( key in params ) {
+        javaparams.put(key, params[key]);
+    }
+    return "" + __http.post(url, javaparams);
 };
 
 http.get = function(url) {
-    return http.get2(url).content;
+    return "" + __http.get(url);
 }
 
-http.get2 = function(url, headers) {
-    var headersMap = new java.util.HashMap();
-    for( key in headers ) {
-        headersMap.put(key, headers[key]);
-    }
-
-    var temp = __http.get2(url, headersMap);
+http.get2 = function(url) {
+    var temp = __http.get2(url);
     var res = {};
     res.header = "" + temp.get('header');
     res.content = "" + temp.get('content');
     return res;
 }
 
-http.post2 = function(url, params, headers, isMultipart) {
+http.post2 = function(url, params) {
     var javaparams = new java.util.HashMap();
     for( key in params ) {
         javaparams.put(key, params[key]);
     }
-
-    var headersMap = new java.util.HashMap();
-    for( key in headers ) {
-        headersMap.put(key, headers[key]);
-    }
-
-    var temp = __http.post2(url, javaparams, headersMap, !!isMultipart);
+    var temp = __http.post2(url, javaparams);
     var res = {}
     res.header = "" + temp.get('header');
     res.content = "" + temp.get('content');

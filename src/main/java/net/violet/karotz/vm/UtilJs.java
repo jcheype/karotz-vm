@@ -39,7 +39,7 @@ public class UtilJs {
     public void include(String filename) throws FileNotFoundException, ScriptException {
         File script = new File(dir,filename);
         //System.out.println(script.getAbsolutePath());
-        engine.eval(new InputStreamReader(new FileInputStream(script), Charset.forName("UTF-8")));
+        engine.eval(new InputStreamReader(new FileInputStream(script)));
     }
 
     public void exit(){
