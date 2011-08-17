@@ -42,3 +42,7 @@ http.post2 = function(url, params) {
     res.content = "" + temp.get('content');
     return res;
 }
+
+timestamp = function() {
+    return Math.floor(new Date().getTime()/1000);
+}

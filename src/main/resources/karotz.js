@@ -224,7 +224,7 @@ social.twitter.sign = function(data) {
     log('social.twitter.sign karotz.js');
     log('karotz.js : Signature with key=' + social.twitter.consumersecret + '&' + social.twitter.tokensecret);
     log('karotz.js : Signature with data='+ data);
-    log('karotz.js : Signature with result=' + ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret).length);
+    log('karotz.js : Signature with result=' + ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret));
     
     return ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret);
 }

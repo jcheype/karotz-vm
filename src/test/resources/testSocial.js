@@ -5,10 +5,10 @@ var callback = function(data){
 var socialok = function(data){
     log("connected to Karotz");
     setTimeout(100, function(){karotz.start(callback, {});});
-var sign = social.twitter.sign('blabla');
-log("social.twitter.sendSign sign: " + sign.toString());
+    var sign = social.twitter.sign('blabla');
+    log("social.twitter.sendSign sign: " + sign.toString());
+//karotz.led.light("FF0000");
 }
-
 
 karotz.connect("192.168.90.6", 9123);
 social.init(socialok, {});
