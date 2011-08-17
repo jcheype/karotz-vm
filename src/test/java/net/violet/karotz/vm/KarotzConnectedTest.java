@@ -1,12 +1,14 @@
 package net.violet.karotz.vm;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
-import javax.script.ScriptEngine;
 import javax.script.ScriptException;
-import java.io.InputStreamReader;
+import org.junit.Test;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,11 +18,12 @@ import java.io.InputStreamReader;
  * To change this template use File | Settings | File Templates.
  */
 public class KarotzConnectedTest {
-    ScriptEngine engine;
+    
+    ScriptableObject engine;
 
     @Before
-    public void init() throws NoSuchMethodException, ScriptException {
-        engine = App.getVM(true);
+    public void init() throws NoSuchMethodException, ScriptException, IOException {
+        engine = App.getVMRhino(true);
         System.out.println("new test: ");
     }
 
@@ -29,26 +32,41 @@ public class KarotzConnectedTest {
         System.out.println("\n==============\n\n");
     }
 
-//    @Test
-    public void script() throws ScriptException, InterruptedException {
-        engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testKarotz.js")));
-        
-        Thread.sleep(15000);
-    }
-    
-    
-//    @Test
-    public void scriptSocial() throws ScriptException, InterruptedException {
-        engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testSocial.js")));
-        
-        Thread.sleep(5000);
-    }
-
+//    ScriptEngine engine;
+//
+//    @Before
+//    public void init() throws NoSuchMethodException, ScriptException {
+//        engine = App.getVM(true);
+//        System.out.println("new test: ");
+//    }
+//
+//    @After
+//    public void after() {
+//        System.out.println("\n==============\n\n");
+//    }
+//
+////    @Test
+//    public void script() throws ScriptException, InterruptedException {
+//        engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testKarotz.js")));
+//        
+//        Thread.sleep(15000);
+//    }
+//    
+//    
+////    @Test
+//    public void scriptSocial() throws ScriptException, InterruptedException {
+//        engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testSocial.js")));
+//        
+//        Thread.sleep(5000);
+//    }
+//
     @Test
-    public void testTwitter() throws ScriptException, InterruptedException {
-        engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testTwitter.js")));
+    public void testTwitter() throws ScriptException, InterruptedException, IOException {
+        InputStreamReader is = new InputStreamReader(getClass().getResourceAsStream("/testTwitter.js"));
+//        engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testTwitter.js")));
+            Context.getCurrentContext().evaluateReader(engine, is, "testTwitter.js", 0, null);
 
-        Thread.sleep(5000);
+        Thread.sleep(10000);
     }
 
 }

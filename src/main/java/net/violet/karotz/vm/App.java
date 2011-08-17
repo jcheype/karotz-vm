@@ -51,28 +51,28 @@ public class App {
         return scope;
     }
 
-    public static ScriptEngine getVM(boolean isConnected) throws NoSuchMethodException, ScriptException {
-        for (ScriptEngineFactory f : factory.getEngineFactories()) {
-            System.out.println("name: " + f.getEngineName());
-            System.out.println("language: " + f.getLanguageName());
-        }
-        ScriptEngine engine = factory.getEngineByName("rhino");
-        HttpJS httpJS = new HttpJS();
-        engine.put("__http", httpJS);
-        engine.put("file", new FileJs(dir));
-        engine.put("___UTILS__", new UtilJs(engine, dir));
-//        engine.put("__social", new SocialJs());
-
-        //engine.eval(new InputStreamReader(App.class.getResourceAsStream("/json2.js"), Charset.forName("UTF-8")));
-        engine.eval(new InputStreamReader(App.class.getResourceAsStream("/init.js"), Charset.forName("UTF-8")));
-        if (!isConnected)
-            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/simu.js"), Charset.forName("UTF-8")));
-        else {
-            engine.put("__CLIENT__", new Client());
-            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/karotz.js"), Charset.forName("UTF-8")));
-        }
-        return engine;
-    }
+//    public static ScriptEngine getVM(boolean isConnected) throws NoSuchMethodException, ScriptException {
+//        for (ScriptEngineFactory f : factory.getEngineFactories()) {
+//            System.out.println("name: " + f.getEngineName());
+//            System.out.println("language: " + f.getLanguageName());
+//        }
+//        ScriptEngine engine = factory.getEngineByName("rhino");
+//        HttpJS httpJS = new HttpJS();
+//        engine.put("__http", httpJS);
+//        engine.put("file", new FileJs(dir));
+//        engine.put("___UTILS__", new UtilJs(engine, dir));
+////        engine.put("__social", new SocialJs());
+//
+//        //engine.eval(new InputStreamReader(App.class.getResourceAsStream("/json2.js"), Charset.forName("UTF-8")));
+//        engine.eval(new InputStreamReader(App.class.getResourceAsStream("/init.js"), Charset.forName("UTF-8")));
+//        if (!isConnected)
+//            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/simu.js"), Charset.forName("UTF-8")));
+//        else {
+//            engine.put("__CLIENT__", new Client());
+//            engine.eval(new InputStreamReader(App.class.getResourceAsStream("/karotz.js"), Charset.forName("UTF-8")));
+//        }
+//        return engine;
+//    }
 
     private static void showHelp(Options options) {
         HelpFormatter formatter = new HelpFormatter();
