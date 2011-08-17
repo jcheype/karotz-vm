@@ -37,10 +37,18 @@ public class KarotzConnectedTest {
     }
     
     
-    @Test
+//    @Test
     public void scriptSocial() throws ScriptException, InterruptedException {
         engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testSocial.js")));
         
         Thread.sleep(5000);
     }
+
+    @Test
+    public void testTwitter() throws ScriptException, InterruptedException {
+        engine.eval(new InputStreamReader(getClass().getResourceAsStream("/testTwitter.js")));
+
+        Thread.sleep(5000);
+    }
+
 }

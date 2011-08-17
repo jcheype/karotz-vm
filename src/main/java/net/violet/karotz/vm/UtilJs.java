@@ -13,8 +13,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import javax.crypto.Mac;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.mina.util.Base64;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +39,7 @@ public class UtilJs {
     public void include(String filename) throws FileNotFoundException, ScriptException {
         File script = new File(dir,filename);
         //System.out.println(script.getAbsolutePath());
-        engine.eval(new InputStreamReader(new FileInputStream(script), Charset.forName("UTF-8")));
+        engine.eval(new InputStreamReader(new FileInputStream(script)));
     }
 
     public void exit(){
@@ -67,14 +67,15 @@ public class UtilJs {
         public Boolean run();
     }
     
-    public byte[] doHMAC(String dataToSign, String secretKey) throws NoSuchAlgorithmException, InvalidKeyException
+    public String doHMAC(String dataToSign, String secretKey) throws NoSuchAlgorithmException, InvalidKeyException
     {
-        byte[] data = dataToSign.getBytes();
-        byte[] secret = secretKey.getBytes();
-        SecretKey key = new SecretKeySpec(secret, "HmacSHA1");
-        Mac m = Mac.getInstance("HmacSHA1");
-        m.init(key);
-        return m.doFinal(data);
+        Mac mac = Mac.getInstance("HmacSHA1");
+        SecretKeySpec secret = new SecretKeySpec(secretKey.getBytes(), "HmacSHA1");
+        mac.init(secret);
+        byte[] digest = mac.doFinal(dataToSign.getBytes(Charset.forName("ASCII")));
+        
+        String calcSignature = new String(Base64.encodeBase64(digest), Charset.forName("ASCII"));
+        return calcSignature;
     }
 
 }

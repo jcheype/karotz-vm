@@ -14,7 +14,7 @@ cbPulse = function(event){
     }
 }
 
-karotz.connect("10.104.2.41", 9123);
+karotz.connect("192.168.90.6", 9123);
 karotz.start(callback, "test");
 
 

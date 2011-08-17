@@ -23,7 +23,7 @@ __GEN_VOOS_CALLBACK = function(callback){
     var voosCallback = null;
     if(callback){
         voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){callback(""+voosMsg.getEvent().getCode().toString())}
+            onEvent: function(voosMsg){callback(voosMsg.getEvent().getCode().toString())}
         };
     }
     return voosCallback;
@@ -72,23 +72,9 @@ karotz.ears.reset = function(callback){
 }
 //////
 karotz.webcam = {}
-karotz.webcam.photo = function(url, callback){
+karotz.webcam.photo = function(url){
     log("karotz webcam photo: " + url);
-
-    var voosCallback = null;
-    if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){
-                var event = {
-                    type: ""+voosMsg.getEvent().getCode().toString(),
-                    data: "__PATH:lapin_diode_bleue.jpg"
-                }
-                callback(event)
-            }
-        };
-    }
-
-    __CLIENT__.sendPhoto(url, voosCallback);
+    __CLIENT__.sendPhoto(url);
 }
 
 //////
@@ -116,14 +102,6 @@ karotz.multimedia.next = function(callback){
 karotz.multimedia.previous = function(callback){
     log("karotz multimedia previous");
     __CLIENT__.sendMultimediaPrevious(__GEN_VOOS_CALLBACK(callback));
-}
-karotz.multimedia.record = function(callback){
-    log("karotz multimedia record");
-    var event = {
-        type: "TERMINATED",
-        data: "__PATH:record.flac"
-    };
-    callback(event);
 }
 
 ///////////
@@ -187,15 +165,13 @@ karotz.asr.string= function(grammar, lang, callback){
             onEvent: function(voosMsg){
                 if(!voosMsg.hasAsrCallback())
                     return;
-                var tmpResult = voosMsg.getAsrCallback().getRecognition(0);
-                var semantic = ""+tmpResult.getSemantic();
                 log("ASR reco: " + voosMsg.getAsrCallback().getRecognitionCount());
-                log("ASR reco: " + semantic);
-                var semantic = semantic.substr(10,semantic.length - 21 );
+                var tmpResult = voosMsg.getAsrCallback().getRecognition(0);
+
                 var asrResult = {
                     confident: tmpResult.getConfident(),
                     text: tmpResult.getText(),
-                    semantic: semantic
+                    semantic: tmpResult.getSemantic()
                 };
                 callback(asrResult);
             }
@@ -248,7 +224,7 @@ social.twitter.sign = function(data) {
     log('social.twitter.sign karotz.js');
     log('karotz.js : Signature with key=' + social.twitter.consumersecret + '&' + social.twitter.tokensecret);
     log('karotz.js : Signature with data='+ data);
-    log('karotz.js : Signature with result=' + ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret).length);
+    log('karotz.js : Signature with result=' + ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret));
     
     return ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret);
 }

@@ -1,13 +1,18 @@
 package net.violet.karotz.vm;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ScriptableObject;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.mina.util.Base64;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,5 +64,16 @@ public class UtilJs2 {
 
     interface RunnableJS {
         public Object run();
+    }
+    
+    public String doHMAC(String dataToSign, String secretKey) throws NoSuchAlgorithmException, InvalidKeyException
+    {
+        Mac mac = Mac.getInstance("HmacSHA1");
+        SecretKeySpec secret = new SecretKeySpec(secretKey.getBytes(), "HmacSHA1");
+        mac.init(secret);
+        byte[] digest = mac.doFinal(dataToSign.getBytes(Charset.forName("ASCII")));
+        
+        String calcSignature = new String(Base64.encodeBase64(digest), Charset.forName("ASCII"));
+        return calcSignature;
     }
 }
