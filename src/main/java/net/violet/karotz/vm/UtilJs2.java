@@ -11,8 +11,8 @@ import java.util.UUID;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.mina.util.Base64;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ScriptableObject;
+import sun.org.mozilla.javascript.internal.Context;
+import sun.org.mozilla.javascript.internal.ScriptableObject;
 
 /**
  * Created by IntelliJ IDEA.
