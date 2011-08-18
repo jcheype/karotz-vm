@@ -29,10 +29,22 @@ karotz.tts.start("hello tout le monde", "fr", function(event){
          log(event)
          karotz.multimedia.play("http://www.universal-soundbank.com/mp3/sounds/829.mp3", function(event){
              log(event);
-             if(event == "TERMINATED")
+             if(event == "TERMINATED") {
                  karotz.led.pulse("0000FF", 100, 3000, cbPulse);
+                 karotz.tts.start("Ce message doit etre interrompu avant la fin. Une fois. Ce message doit etre interrompu avant la fin. Deux fois. Ce message doit etre interrompu avant la fin. Trois fois.", "fr",
+                        function(event){
+                    //        if(event=="START"){
+                                log(event);
+                                setTimeout(4000, function(){log('wait for tts to start before stopping');karotz.tts.stop();return false});
+                    //        }
+                        }
+                    );
+             }
          })
         })
     }
 });
+
+
+
 karotz.led.light("FF0000");

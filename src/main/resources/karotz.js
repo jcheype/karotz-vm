@@ -36,7 +36,8 @@ karotz.tts.start = function(text, lang, callback){
 }
 
 karotz.tts.stop = function(callback){
-    throw "NOT IMPLEMENTED"
+    log("karotz should stop speaking");
+    __CLIENT__.sendTtsStop(__GEN_VOOS_CALLBACK(callback));
 }
 
 //////

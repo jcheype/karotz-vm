@@ -9,13 +9,13 @@ karotz.tts = {}
 karotz.tts.start = function(text, lang, callback){
     log("karotz should say ["+ lang +"]: " + text);
     if(callback)
-        setTimeout((text.length*50), function(){ callback("TERMINATED")})
+        setTimeout((text.length*50), function(){ callback("TERMINATED"); return false;})
 }
 
 karotz.tts.stop = function(callback){
     log("karotz should stop saying");
     if(callback)
-        setTimeout(100, function(){ callback("TERMINATED")})
+        setTimeout(100, function(){ callback("TERMINATED"); return false;})
 }
 
 //////////////////////////

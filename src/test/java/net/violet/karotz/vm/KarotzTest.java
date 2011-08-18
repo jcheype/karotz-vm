@@ -29,12 +29,21 @@ public class KarotzTest {
         System.out.println("\n==============\n\n");
     }
     
-//    @Test
+    @Test
     public void ttsStart() throws ScriptException, InterruptedException {
         Context.getCurrentContext().evaluateString(engine, "karotz.tts.start('hello', 'fr', function(event){ log(event);});", "ttsStart.js", 0, null);
         Thread.sleep(500);
     }
 
+    @Test
+    public void ttsStop() throws ScriptException, InterruptedException {
+        
+        Context.getCurrentContext().evaluateString(engine, "karotz.tts.start('hello', 'fr', function(event){ log(event);});"
+                + "setTimeout(1000, function(){log('wait for tts to start before stopping');return false});"
+                + "karotz.tts.stop(function(event){ log(event);});", "ttsStop.js", 0, null);
+        Thread.sleep(500);
+    }
+    
     @Test
     public void earsMove() throws ScriptException, InterruptedException {
         Context.getCurrentContext().evaluateString(engine, "karotz.ears.move(5, 3, function(event){ log(event);} );", "earsMove.js", 0, null);

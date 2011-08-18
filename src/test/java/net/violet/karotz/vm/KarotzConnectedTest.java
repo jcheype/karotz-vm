@@ -32,7 +32,7 @@ public class KarotzConnectedTest {
         System.out.println("\n==============\n\n");
     }
 
-//    @Test
+    @Test
     public void script() throws ScriptException, InterruptedException, IOException {
         InputStreamReader is = new InputStreamReader(getClass().getResourceAsStream("/testKarotz.js"));
         Context.getCurrentContext().evaluateReader(engine, is, "testKarotz.js", 0, null);
@@ -49,7 +49,7 @@ public class KarotzConnectedTest {
         Thread.sleep(5000);
     }
 
-    @Test
+//    @Test
     public void testTwitter() throws ScriptException, InterruptedException, IOException {
         InputStreamReader is = new InputStreamReader(getClass().getResourceAsStream("/testTwitter.js"));
         Context.getCurrentContext().evaluateReader(engine, is, "testTwitter.js", 0, null);
