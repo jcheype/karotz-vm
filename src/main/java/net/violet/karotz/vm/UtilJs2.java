@@ -62,7 +62,7 @@ public class UtilJs2 {
     }
 
     interface RunnableJS {
-        public Boolean run();
+        public Object run();
     }
         public String doHMAC(String dataToSign, String secretKey) throws NoSuchAlgorithmException, InvalidKeyException
     {
