@@ -15,7 +15,7 @@ import java.io.OutputStream;
  * To change this template use File | Settings | File Templates.
  */
 public class FileJs {
-    class Data{
+    public class Data{
         private String text;
 
         Data(String text) {
