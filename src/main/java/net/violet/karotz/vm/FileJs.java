@@ -9,10 +9,9 @@ import java.io.OutputStream;
 
 /**
  * Created by IntelliJ IDEA.
- * User: mush
+ * User: Julien Cheype
  * Date: 7/5/11
  * Time: 8:47 PM
- * To change this template use File | Settings | File Templates.
  */
 public class FileJs {
     class Data{

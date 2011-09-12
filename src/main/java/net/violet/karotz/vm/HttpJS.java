@@ -13,6 +13,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
+import javax.activation.MimetypesFileTypeMap;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -160,9 +161,9 @@ public class HttpJS {
                     String filename = entry.getValue().substring("__PATH:".length());
                     InputStream stream = getClass().getResourceAsStream("/" + filename);
 
-                    mpe.addPart(entry.getKey(), new ByteArrayBody(readByte(stream), filename));
+                    mpe.addPart(entry.getKey(), new ByteArrayBody(readByte(stream), new MimetypesFileTypeMap().getContentType(filename),filename));
                 } else
-                    mpe.addPart(entry.getKey(), new StringBody(entry.getValue(), "", Charset.forName("UTF-8")));
+                    mpe.addPart(entry.getKey(), new StringBody(entry.getValue(), Charset.forName("UTF-8")));
             }
             httpEntity = mpe;
         } else {
