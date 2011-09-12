@@ -22,8 +22,8 @@ karotz.start = function(callback, data){
 __GEN_VOOS_CALLBACK = function(callback){
     var voosCallback = null;
     if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){callback(""+voosMsg.getEvent().getCode().toString())}
+        voosCallback = new net.violet.voos.message.VoosMsgCallback() {
+            onVoosMsg: function(voosMsg){callback(""+voosMsg.getEvent().getCode().toString())}
         };
     }
     return voosCallback;
@@ -78,8 +78,8 @@ karotz.webcam.photo = function(url, callback){
 
     var voosCallback = null;
     if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){
+        voosCallback = new net.violet.voos.message.VoosMsgCallback() {
+            onVoosMsg: function(voosMsg){
                 var event = {
                     type: ""+voosMsg.getEvent().getCode().toString(),
                     data: "__PATH:lapin_diode_bleue.jpg"
@@ -132,8 +132,8 @@ karotz.multimedia.artist = function(callback){
     log("karotz multimedia artist");
     var voosCallback = null;
     if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){
+        voosCallback = new net.violet.voos.message.VoosMsgCallback() {
+            onVoosMsg: function(voosMsg){
                 callback(voosMsg.getMultimedia().getArtistlistList().get(0))
             }
         };
@@ -144,8 +144,8 @@ karotz.multimedia.folder = function(callback){
     log("karotz multimedia folder");
     var voosCallback = null;
     if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){
+        voosCallback = new net.violet.voos.message.VoosMsgCallback() {
+            onVoosMsg: function(voosMsg){
                 callback(voosMsg.getMultimedia().getFolderlistList().get(0))
             }
         };
@@ -156,8 +156,8 @@ karotz.multimedia.genre = function(callback){
     log("karotz multimedia genre");
     var voosCallback = null;
     if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){
+        voosCallback = new net.violet.voos.message.VoosMsgCallback() {
+            onVoosMsg: function(voosMsg){
                 callback(voosMsg.getMultimedia().getGenrelistList().get(0))
             }
         };
@@ -168,8 +168,8 @@ karotz.multimedia.song = function(callback){
     log("karotz multimedia song");
     var voosCallback = null;
     if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){
+        voosCallback = new net.violet.voos.message.VoosMsgCallback() {
+            onVoosMsg: function(voosMsg){
                 callback(voosMsg.getMultimedia().getSonglistList().get(0))
             }
         };
@@ -184,8 +184,8 @@ karotz.asr.string= function(grammar, lang, callback){
 
     var voosCallback = null;
     if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){
+        voosCallback = new net.violet.voos.message.VoosMsgCallback() {
+            onVoosMsg: function(voosMsg){
                 if(!voosMsg.hasAsrCallback())
                     return;
                 var tmpResult = voosMsg.getAsrCallback().getRecognition(0);
@@ -215,8 +215,8 @@ social.init = function(callback, data) {
     log("karotz social init karotz.js");
     var voosCallback = null;
     if(callback){
-        voosCallback = new net.violet.karotz.client.VoosCallBack() {
-            onEvent: function(voosMsg){
+        voosCallback = new net.violet.voos.message.VoosMsgCallback() {
+            onVoosMsg: function(voosMsg){
                 log("call social callback");
                 if(!voosMsg.hasSocial())
                     return;
@@ -242,7 +242,7 @@ social.init = function(callback, data) {
             }
         };
     }
-    
+    log(voosCallback);
     __CLIENT__.socialInit(voosCallback);
 }
 social.twitter.sign = function(data) {
@@ -252,6 +252,17 @@ social.twitter.sign = function(data) {
     log('karotz.js : Signature with result=' + ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret));
     
     return ___UTILS__.doHMAC(data, social.twitter.consumersecret + '&' + social.twitter.tokensecret);
+}
+social.facebook.get = function(data) {
+    if(data.indexOf("?") > -1)
+        return http.get(data+"&access_token=" + encodeURIComponent(social.facebook.token));
+    else
+        return http.get(data+"?access_token=" + encodeURIComponent(social.facebook.token));
+}
+
+social.facebook.post = function(url, data, header, isMultipart) {
+    data.access_token = social.facebook.token;
+    return http.post(url, data, header, isMultipart);
 }
 
 ///////////////////////////
@@ -297,7 +308,17 @@ var msgHandler = new net.violet.karotz.client.MessageHandler() {
             karotz.button.__LISTENERS[i](buttonCallback.getType().name())
         }
     },
-    onMessade:  function(voosMsg){}
+    onMessade:  function(iosession, voosMsg){
+        if(voosMsg.hasRfidCallback()){
+            this.onRfid(voosMsg.getRfidCallback());
+        }
+        if(voosMsg.hasEarsCallback()){
+            this.onEars(voosMsg.getEarsCallback());
+        }
+        if(voosMsg.hasButtonCallback()){
+            this.onButton(voosMsg.getButtonCallback());
+        }
+    }
 }
 
 __CLIENT__.setMessageHandler(msgHandler);
