@@ -281,7 +281,7 @@ karotz.button.addListener = function(callback){
 if(!karotz.ears) karotz.ears = {};
 karotz.ears.__LISTENERS = [];
 karotz.ears.addListener = function(callback){
-    karotz.button.__LISTENERS.push(callback);
+    karotz.ears.__LISTENERS.push(callback);
 }
 
 var msgHandler = new net.violet.karotz.client.MessageHandler() {
