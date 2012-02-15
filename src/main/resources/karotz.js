@@ -287,20 +287,26 @@ karotz.ears.addListener = function(callback){
 var msgHandler = new net.violet.karotz.client.MessageHandler() {
     onRfid:     function(rfidCallback){
         var data = {};
-        data.id = rfidCallback.getId();
+        data.id = "" + rfidCallback.getId();
         if(rfidCallback.hasDirection()){data.direction = rfidCallback.getDirection().getNumber()}
         if(rfidCallback.hasApp()){data.app = rfidCallback.getApp();}
-        if(rfidCallback.hasType()){data.type = rfidCallback.getType().getNumber()}
+        if(rfidCallback.hasType()){data.type = "" + rfidCallback.getType().name()}
         if(rfidCallback.hasPict()){data.pict = rfidCallback.getPict()}
-        if(rfidCallback.hasColor()){data.color = rfidCallback.getColor().getNumber()}
+        if(rfidCallback.hasColor()){data.color = "" + rfidCallback.getColor().name()}
 
         for(var i=0; i<karotz.rfid.__LISTENERS.length;i++ ){
             karotz.rfid.__LISTENERS[i](data)
         }
     },
-    onEars:     function(earsCallback){
+    onEars:
+    function(earsCallback){
+        var data = {};
+        if(earsCallback.hasType()){data.type = earsCallback.getType().name()}
+        if(earsCallback.hasStep()){data.step = earsCallback.getStep().getNumber}
+        if(earsCallback.hasLength()){data.length = earsCallback.getLength().getNumber()}
+
         for(var i=0; i<karotz.ears.__LISTENERS.length;i++ ){
-            karotz.ears.__LISTENERS[i](earsCallback.getType().name())
+            karotz.ears.__LISTENERS[i](data)
         }
     },
     onButton:   function(buttonCallback){
