@@ -302,7 +302,7 @@ var msgHandler = new net.violet.karotz.client.MessageHandler() {
     function(earsCallback){
         var data = {};
         if(earsCallback.hasType()){data.type = earsCallback.getType().name()}
-        if(earsCallback.hasStep()){data.step = earsCallback.getStep().getNumber}
+        if(earsCallback.hasStep()){data.step = earsCallback.getStep().getNumber()}
         if(earsCallback.hasLength()){data.length = earsCallback.getLength().getNumber()}
 
         for(var i=0; i<karotz.ears.__LISTENERS.length;i++ ){
